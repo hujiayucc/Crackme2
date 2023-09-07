@@ -25,7 +25,7 @@
 跳转定位到main函数
 ![](https://oss.hujiayucc.cn/blog/OSSFLrW20230906091317.jpg)
 没有发现有价值的线索，简单阅读一下汇编：
-```
+```assembly
 str w0, [sp, 0x1c]  ; 第一个参数
 str x1, [sp, 0x10]   ; 第二个参数的第二个元素数据 例如args[1]
 cmp w0, 1             ; 判断第一个参数是否为1
@@ -52,7 +52,7 @@ check为sym.imp.dlsym加载的函数或变量/常量，下面对check进行了�
 ### libxy.so
 ![](https://oss.hujiayucc.cn/blog/OSSXY2A20230906103537.jpg)
 从汇编代码中看到
-```
+```assembly
 stp x29, x30, [sp, -0x20]!  ; 调用了一个地址-0x20的函数
 ; 这里传入两个参数，第一个参数为传入的flag
 stp x19, x20, [sp, 0x10]
@@ -73,20 +73,20 @@ mov x0, x19
 ```c
 bool verify(long *param_1, int param_2)
 {
-	for (int i = 0;i < param_2)
-	{
-		long *l = *(0xbd0 + i);
-		switch (i)
-		{
-			case 0:
-				if (l != (param_2 ^ (0xc6e6 | 0xbb0000) ^ param_1[i])) return false;
-				break;
-			default:
-				if (l != (i * (0x5677 | 0x1310000) ^ param_1[i]) ^ param_2) return false;
+  for (int i = 0;i < param_2)
+  {
+    long *l = *(0xbd0 + i);
+    switch (i)
+    {
+      case 0:
+        if (l != (param_2 ^ (0xc6e6 | 0xbb0000) ^ param_1[i])) return false;
+        break;
+      default:
+        if (l != (i * (0x5677 | 0x1310000) ^ param_1[i]) ^ param_2) return false;
 				break;
 		}
 	}
-    return param_2 == 0x17;
+  return param_2 == 0x17;
 }
 ```
 
